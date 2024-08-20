@@ -1,10 +1,4 @@
 ﻿
-//和网络 中 连接/连接池 有关的函数放这里
-/*
-公众号：程序员速成     q群：716480601
-王健伟老师 《Linux C++通讯架构实战》
-商业级质量的代码，完整的项目，帮你提薪至少10K
-*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -290,7 +284,6 @@ lblRRTD:
 //我们把ngx_close_accepted_connection()函数改名为让名字更通用，并从文件ngx_socket_accept.cxx迁移到本文件中，并改造其中代码，注意顺序
 void CSocekt::ngx_close_connection(lpngx_connection_t pConn)
 {    
-    //pConn->fd = -1; //官方nginx这么写，这么写有意义；    不要这个东西，回收时不要轻易东连接里边的内容
     ngx_free_connection(pConn); 
     if(pConn->fd != -1)
     {

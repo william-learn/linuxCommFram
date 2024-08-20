@@ -1,10 +1,5 @@
 ﻿
-//和网络  中 客户端发送来数据/服务器端收包 有关的代码
-/*
-公众号：程序员速成     q群：716480601
-王健伟老师 《Linux C++通讯架构实战》
-商业级质量的代码，完整的项目，帮你提薪至少10K
-*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -294,7 +289,6 @@ void CSocekt::ngx_wait_request_handler_proc_plast(lpngx_connection_t pConn,bool 
 //-2，errno != EAGAIN != EWOULDBLOCK != EINTR ，一般我认为都是对端断开的错误
 ssize_t CSocekt::sendproc(lpngx_connection_t c,char *buff,ssize_t size)  //ssize_t是有符号整型，在32位机器上等同与int，在64位机器上等同与long int，size_t就是无符号型的ssize_t
 {
-    //这里参考借鉴了官方nginx函数ngx_unix_send()的写法
     ssize_t   n;
 
     for ( ;; )
@@ -327,7 +321,6 @@ ssize_t CSocekt::sendproc(lpngx_connection_t c,char *buff,ssize_t size)  //ssize
         if(errno == EINTR) 
         {
             //这个应该也不算错误 ，收到某个信号导致send产生这个错误？
-            //参考官方的写法，打印个日志，其他啥也没干，那就是等下次for循环重新send试一次了
             ngx_log_stderr(errno,"CSocekt::sendproc()中send()失败.");  //打印个日志看看啥时候出这个错误
             //其他不需要做什么，等下次for循环吧            
         }

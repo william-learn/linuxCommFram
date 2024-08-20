@@ -1,9 +1,4 @@
-﻿//和开启子进程相关
-/*
-公众号：程序员速成     q群：716480601
-王健伟老师 《Linux C++通讯架构实战》
-商业级质量的代码，完整的项目，帮你提薪至少10K
-*/
+﻿
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -32,7 +27,7 @@ void ngx_master_process_cycle()
 
     sigemptyset(&set);   //清空信号集
 
-    //下列这些信号在执行本函数期间不希望收到【考虑到官方nginx中有这些信号，老师就都搬过来了】（保护不希望由信号中断的代码临界区）
+    //下列这些信号在执行本函数期间不希望收到（保护不希望由信号中断的代码临界区）
     //建议fork()子进程时学习这种写法，防止信号的干扰；
     sigaddset(&set, SIGCHLD);     //子进程状态改变
     sigaddset(&set, SIGALRM);     //定时器超时

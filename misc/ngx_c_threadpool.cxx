@@ -1,10 +1,5 @@
 ﻿
-//和 线程池 有关的函数放这里
-/*
-公众号：程序员速成     q群：716480601
-王健伟老师 《Linux C++通讯架构实战》
-商业级质量的代码，完整的项目，帮你提薪至少10K
-*/
+
 
 #include <stdarg.h>
 #include <unistd.h>  //usleep
@@ -116,7 +111,7 @@ void* CThreadPool::ThreadFunc(void* threadData)
         //以下这行程序写法技巧十分重要，必须要用while这种写法，
         while ( (pThreadPoolObj->m_MsgRecvQueue.size() == 0) && m_shutdown == false)
         {
-            //如果这个pthread_cond_wait被唤醒【被唤醒后程序执行流程往下走的前提是拿到了锁--官方：pthread_cond_wait()返回时，互斥量再次被锁住】，
+            //如果这个pthread_cond_wait被唤醒【被唤醒后程序执行流程往下走的前提是拿到了锁--：pthread_cond_wait()返回时，互斥量再次被锁住】，
             if(pThread->ifrunning == false)            
                 pThread->ifrunning = true; //标记为true了才允许调用StopAll()：测试中发现如果Create()和StopAll()紧挨着调用，就会导致线程混乱，所以每个线程必须执行到这里，才认为是启动成功了；
             

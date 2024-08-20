@@ -1,9 +1,4 @@
-﻿//和日志相关的函数放之类
-/*
-公众号：程序员速成     q群：716480601
-王健伟老师 《Linux C++通讯架构实战》
-商业级质量的代码，完整的项目，帮你提薪至少10K
-*/
+﻿
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,29 +31,10 @@ static u_char err_levels[][20]  =
 };
 ngx_log_t   ngx_log;
 
-
-//----------------------------------------------------------------------------------------------------------------------
-//描述：通过可变参数组合出字符串【支持...省略号形参】，自动往字符串最末尾增加换行符【所以调用者不用加\n】， 往标准错误上输出这个字符串；
-//     如果err不为0，表示有错误，会将该错误编号以及对应的错误信息一并放到组合出的字符串中一起显示；
-
-//《c++从入门到精通》里老师讲解过，比较典型的C语言中的写法，就是这种va_start,va_end
-//fmt:通过这第一个普通参数来寻址后续的所有可变参数的类型及其值
-//调用格式比如：ngx_log_stderr(0, "invalid option: \"%s\",%d", "testinfo",123);
- /* 
-    ngx_log_stderr(0, "invalid option: \"%s\"", argv[0]);  //nginx: invalid option: "./nginx"
-    ngx_log_stderr(0, "invalid option: %10d", 21);         //nginx: invalid option:         21  ---21前面有8个空格
-    ngx_log_stderr(0, "invalid option: %.6f", 21.378);     //nginx: invalid option: 21.378000   ---%.这种只跟f配合有效，往末尾填充0
-    ngx_log_stderr(0, "invalid option: %.6f", 12.999);     //nginx: invalid option: 12.999000
-    ngx_log_stderr(0, "invalid option: %.2f", 12.999);     //nginx: invalid option: 13.00
-    ngx_log_stderr(0, "invalid option: %xd", 1678);        //nginx: invalid option: 68E
-    ngx_log_stderr(0, "invalid option: %Xd", 1678);        //nginx: invalid option: 68E
-    ngx_log_stderr(15, "invalid option: %s , %d", "testInfo",326);        //nginx: invalid option: testInfo , 326
-    ngx_log_stderr(0, "invalid option: %d", 1678); 
-    */
 void ngx_log_stderr(int err, const char *fmt, ...)
 {    
     va_list args;                        //创建一个va_list类型变量
-    u_char  errstr[NGX_MAX_ERROR_STR+1]; //2048  -- ************  +1是我自己填的，感谢官方写法有点小瑕疵，所以动手调整一下
+    u_char  errstr[NGX_MAX_ERROR_STR+1]; //2048  -- ************  +1是我自己填的
     u_char  *p,*last;
 
     memset(errstr,0,sizeof(errstr));     //我个人加的，这块有必要加，至少在va_end处理之前有必要，否则字符串没有结束标记不行的；***************************
@@ -82,7 +58,7 @@ void ngx_log_stderr(int err, const char *fmt, ...)
     //若位置不够，那换行也要硬插入到末尾，哪怕覆盖到其他内容    
     if (p >= (last - 1))
     {
-        p = (last - 1) - 1; //把尾部空格留出来，这里感觉nginx处理的似乎就不对 
+        p = (last - 1) - 1; //把尾部空格留出来
                              //我觉得，last-1，才是最后 一个而有效的内存，而这个位置要保存\0，所以我认为再减1，这个位置，才适合保存\n
     }
     *p++ = '\n'; //增加个换行符    
@@ -123,7 +99,7 @@ u_char *ngx_log_errno(u_char *buf, u_char *last, int err)
     size_t extralen = leftlen + rightlen; //左右的额外宽度
     if ((buf + len + extralen) < last)
     {
-        //保证整个我装得下，我就装，否则我全部抛弃 ,nginx的做法是 如果位置不够，就硬留出50个位置【哪怕覆盖掉以往的有效内容】，也要硬往后边塞，这样当然也可以；
+        //保证整个我装得下，我就装，否则我全部抛弃
         buf = ngx_cpymem(buf, leftstr, leftlen);
         buf = ngx_cpymem(buf, perrorinfo, len);
         buf = ngx_cpymem(buf, rightstr, rightlen);
@@ -184,7 +160,7 @@ void ngx_log_error_core(int level,  int err, const char *fmt, ...)
     //若位置不够，那换行也要硬插入到末尾，哪怕覆盖到其他内容
     if (p >= (last - 1))
     {
-        p = (last - 1) - 1; //把尾部空格留出来，这里感觉nginx处理的似乎就不对 
+        p = (last - 1) - 1; //把尾部空格留出来
                              //我觉得，last-1，才是最后 一个而有效的内存，而这个位置要保存\0，所以我认为再减1，这个位置，才适合保存\n
     }
     *p++ = '\n'; //增加个换行符       
@@ -245,7 +221,7 @@ void ngx_log_init()
     //nlen = strlen((const char *)plogname);
 
     //只写打开|追加到末尾|文件不存在则创建【这个需要跟第三参数指定文件访问权限】
-    //mode = 0644：文件访问权限， 6: 110    , 4: 100：     【用户：读写， 用户所在组：读，其他：读】 老师在第三章第一节介绍过
+    //mode = 0644：文件访问权限， 6: 110    , 4: 100：     【用户：读写， 用户所在组：读，其他：读】
     //ngx_log.fd = open((const char *)plogname,O_WRONLY|O_APPEND|O_CREAT|O_DIRECT,0644);   //绕过内和缓冲区，write()成功则写磁盘必然成功，但效率可能会比较低；
     ngx_log.fd = open((const char *)plogname,O_WRONLY|O_APPEND|O_CREAT,0644);  
     if (ngx_log.fd == -1)  //如果有错误，则直接定位到 标准错误上去 

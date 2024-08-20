@@ -1,10 +1,5 @@
 ﻿
-//和网络 中 接受连接【accept】 有关的函数放这里
-/*
-公众号：程序员速成     q群：716480601
-王健伟老师 《Linux C++通讯架构实战》
-商业级质量的代码，完整的项目，帮你提薪至少10K
-*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -96,7 +91,7 @@ void CSocekt::ngx_event_accept(lpngx_connection_t oldc)
             
             if (err == EMFILE || err == ENFILE) 
             {
-                //do nothing，这个官方做法是先把读事件从listen socket上移除，然后再弄个定时器，定时器到了则继续执行该函数，但是定时器到了有个标记，会把读事件增加到listen socket上去；
+                //do nothing，这个做法是先把读事件从listen socket上移除，然后再弄个定时器，定时器到了则继续执行该函数，但是定时器到了有个标记，会把读事件增加到listen socket上去；
                 //我这里目前先不处理吧【因为上边已经写这个日志了】；
             }            
             return;

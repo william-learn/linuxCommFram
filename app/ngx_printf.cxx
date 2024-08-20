@@ -1,9 +1,4 @@
-﻿//和打印格式相关的函数放这里
-/*
-公众号：程序员速成     q群：716480601
-王健伟老师 《Linux C++通讯架构实战》
-商业级质量的代码，完整的项目，帮你提薪至少10K
-*/
+﻿
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,7 +13,7 @@
 static u_char *ngx_sprintf_num(u_char *buf, u_char *last, uint64_t ui64,u_char zero, uintptr_t hexadecimal, uintptr_t width);
 
 //----------------------------------------------------------------------------------------------------------------------
-//对于 nginx 自定义的数据结构进行标准格式化输出,就像 printf,vprintf 一样，我们顺道学习写这类函数到底内部是怎么实现的
+
 //该函数只不过相当于针对ngx_vslprintf()函数包装了一下，所以，直接研究ngx_vslprintf()即可
 u_char *ngx_slprintf(u_char *buf, u_char *last, const char *fmt, ...) 
 {
@@ -45,7 +40,7 @@ u_char * ngx_snprintf(u_char *buf, size_t max, const char *fmt, ...)   //类prin
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-//对于 nginx 自定义的数据结构进行标准格式化输出,就像 printf,vprintf 一样，我们顺道学习写这类函数到底内部是怎么实现的
+
 //例如，给进来一个 "abc = %d",13   ,最终buf里得到的应该是   abc=13 这种结果
 //buf：往这里放数据
 //last：放的数据不要超过这里
@@ -371,7 +366,7 @@ static u_char * ngx_sprintf_num(u_char *buf, u_char *last, uint64_t ui64, u_char
     len = (temp + NGX_INT64_LEN) - p; //还原这个len，也就是要显示的数字的实际宽度【因为上边这个while循环改变了len的值】
     //现在还没把实际的数字比如“7654321”往buf里拷贝呢，要准备拷贝
 
-    //如下这个等号是我加的【我认为应该加等号】，nginx源码里并没有加;***********************************************
+    
     if((buf + len) >= last)   //发现如果往buf里拷贝“7654321”后，会导致buf不够长【剩余的空间不够拷贝整个数字】
     {
         len = last - buf; //剩余的buf有多少我就拷贝多少

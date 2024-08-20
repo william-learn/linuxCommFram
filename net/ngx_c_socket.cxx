@@ -1,10 +1,5 @@
 ﻿
-//和网络 有关的函数放这里
-/*
-公众号：程序员速成     q群：716480601
-王健伟老师 《Linux C++通讯架构实战》
-商业级质量的代码，完整的项目，帮你提薪至少10K
-*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -231,7 +226,7 @@ void CSocekt::ReadConf()
     return;
 }
 
-//监听端口【支持多个端口】，这里遵从nginx的函数命名
+//监听端口【支持多个端口】
 //在创建worker进程之前就要执行这个函数；
 bool CSocekt::ngx_open_listening_sockets()
 {    

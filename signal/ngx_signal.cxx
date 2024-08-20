@@ -1,9 +1,4 @@
-﻿//和信号有关的函数放这里
-/*
-公众号：程序员速成     q群：716480601
-王健伟老师 《Linux C++通讯架构实战》
-商业级质量的代码，完整的项目，帮你提薪至少10K
-*/
+﻿
 #include <string.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -30,7 +25,7 @@ typedef struct
 static void ngx_signal_handler(int signo, siginfo_t *siginfo, void *ucontext); //static表示该函数只在当前文件内可见
 static void ngx_process_get_status(void);                                      //获取子进程的结束状态，防止单独kill子进程时子进程变成僵尸进程
 
-//数组 ，定义本系统处理的各种信号，我们取一小部分nginx中的信号，并没有全部搬移到这里，日后若有需要根据具体情况再增加
+//数组 ，定义本系统处理的各种信号
 //在实际商业代码中，你能想到的要处理的信号，都弄进来
 ngx_signal_t  signals[] = {
     // signo      signame             handler
@@ -151,7 +146,7 @@ static void ngx_signal_handler(int signo, siginfo_t *siginfo, void *ucontext)
 
     //.......其他需要扩展的将来再处理；
 
-    //子进程状态有变化，通常是意外退出【既然官方是在这里处理，我们也学习官方在这里处理】
+    //子进程状态有变化，通常是意外退出
     if (signo == SIGCHLD) 
     {
         ngx_process_get_status(); //获取子进程的结束状态
@@ -166,12 +161,12 @@ static void ngx_process_get_status(void)
     pid_t            pid;
     int              status;
     int              err;
-    int              one=0; //抄自官方nginx，应该是标记信号正常处理过一次
+    int              one=0; //标记信号正常处理过一次
 
     //当你杀死一个子进程时，父进程会收到这个SIGCHLD信号。
     for ( ;; ) 
     {
-        //waitpid，有人也用wait,但老师要求大家掌握和使用waitpid即可；这个waitpid说白了获取子进程的终止状态，这样，子进程就不会成为僵尸进程了；
+            //这个waitpid说白了获取子进程的终止状态，这样，子进程就不会成为僵尸进程了；
         //第一次waitpid返回一个> 0值，表示成功，后边显示 2019/01/14 21:43:38 [alert] 3375: pid = 3377 exited on signal 9【SIGKILL】
         //第二次再循环回来，再次调用waitpid会返回一个0，表示子进程还没结束，然后这里有return来退出；
         pid = waitpid(-1, &status, WNOHANG); //第一个参数为-1，表示等待任何子进程，
@@ -185,7 +180,6 @@ static void ngx_process_get_status(void)
         //-------------------------------
         if(pid == -1)//这表示这个waitpid调用有错误，有错误也理解返回出去，我们管不了这么多
         {
-            //这里处理代码抄自官方nginx，主要目的是打印一些日志。考虑到这些代码也许比较成熟，所以，就基本保持原样照抄吧；
             err = errno;
             if(err == EINTR)           //调用被某个信号中断
             {
@@ -206,7 +200,7 @@ static void ngx_process_get_status(void)
             return;
         }  //end if(pid == -1)
         //-------------------------------
-        //走到这里，表示  成功【返回进程id】 ，这里根据官方写法，打印一些日志来记录子进程的退出
+        //走到这里，表示  成功【返回进程id】 ，打印一些日志来记录子进程的退出
         one = 1;  //标记waitpid()返回了正常的返回值
         if(WTERMSIG(status))  //获取使子进程终止的信号编号
         {
